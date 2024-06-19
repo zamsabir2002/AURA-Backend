@@ -4,10 +4,14 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from . serializers import RoleSerializer, UserRegistrationSerializer, UserLoginSerializer, UserListSerializer
+from . serializers import RoleSerializer, UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, UserChangePasswordSerializer, PasswordResetEmailSerializer, UserPasswordResetSerializer
 from . models import Role, User
 from django.contrib.auth import authenticate
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.mail import send_mail
+
 # Create your views here.
 def main(request):
     return HttpResponse("This is main")
@@ -15,18 +19,38 @@ def main(request):
 class RoleList(ListAPIView):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
-
+def get_user_token(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh' : str(refresh),
+        'access' : str(refresh.access_token),
+    }
 class UserRegistrationView(APIView):
-    permission_classes = (AllowAny, )
-    def post(self,request,format=None):
-        serializer = UserRegistrationSerializer(data=request.data) #serializer.data and serializer.error
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            response = {
-                    'Message':'Successfully Registered !',
-                    'user': serializer.data}
-            return Response(response,status=status.HTTP_201_CREATED)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    #authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
+    def post(self, request):
+        if not request.user.is_admin: 
+            return Response({'message': 'Only Admin can register users'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            # Generate random password
+            password = User.objects.make_random_password()
+            user = User.objects.create_user(
+                email=serializer.validated_data['email'],
+                name=serializer.validated_data['name'],
+                password=password,
+                role=serializer.validated_data['role'],
+            )
+            token = get_user_token(user)
+            # Send registration email
+            send_registration_email(user.email, user.name, password)
+            return Response({'message': 'User registered successfully', 'Token' : token})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+def send_registration_email(email, name, password):
+        subject = 'Registration Details'
+        message = f'Hello {name},\n\nYour registration is successful.\n\nEmail: {email}\nPassword: {password}'
+        send_mail(subject, message, 'aura.riskdashboard@gmail.com', [email])
 
 class UserLoginView(APIView):
     permission_classes = (AllowAny, )
@@ -35,17 +59,38 @@ class UserLoginView(APIView):
         if serializer.is_valid(raise_exception=True):
             response = {
                 'Message': 'Login Successful',
-                #'access': serializer.data['access'],
-                #'refresh': serializer.data['refresh'],
                 'authenticatedUser': {
                     'email': serializer.data['email'],
-                    'role': serializer.data['role']
+                    'role': serializer.data['role'],
+                    'refresh': serializer.data['refresh'],
+                    'access': serializer.data['access']
                 }
             }
             return Response(response,status= status.HTTP_200_OK)
         else:
             return Response(serializer.errors,status= status.HTTP_400_BAD_REQUEST)
 
+class UserChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self,request,format=None):
+        serializer = UserChangePasswordSerializer(data=request.data,context={'user':request.user})
+        if serializer.is_valid(raise_exception=True):
+            return Response({'Message':'Password Changed Successfully!'},status=status.HTTP_200_OK)
+
+class ResetPasswordEmailView(APIView):
+    permission_classes = (AllowAny, )
+    def post(self,request,format=None):
+        serializer = PasswordResetEmailSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            return Response({'Message':'Password resent link sent ! '},status= status.HTTP_200_OK)
+        
+class UserPasswordResetView(APIView):
+    permission_classes = (AllowAny,)
+    def post(self,request,userid,Reset_Token,format=None):
+        serializer = UserPasswordResetSerializer(data=request.data,context={'userid':userid,'Reset_Token':Reset_Token})
+        if serializer.is_valid(raise_exception=True):
+            return Response({'Message':'Password has been reset successfully !'},status=status.HTTP_200_OK)
+        
 class UserListView(APIView):
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated,)
