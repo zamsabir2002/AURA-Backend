@@ -8,6 +8,10 @@ from threading import Thread
 
 
 class QueueConsumer(WebsocketConsumer):
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.thread_id = None
+        
     def connect(self):
         self.accept()
         try:
@@ -22,9 +26,9 @@ class QueueConsumer(WebsocketConsumer):
                 on_message_callback=self.receive_message,
                 auto_ack=True
             )
-            print("HERE")
+
             scan_thread = Thread(target=self.channel.start_consuming)
-            print("HERE2")
+
             print(scan_thread)
             scan_thread.start()
 
@@ -45,9 +49,7 @@ class QueueConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         # Close connection to RabbitMQ
         try:
-            print("CLOSING1")
             self.connection.close()
-            print("CLOSING")
             raise StopConsumer()
         except:
             print("CLOSING")
@@ -58,14 +60,14 @@ class QueueConsumer(WebsocketConsumer):
         #     raise StopConsumer()
 
     def receive_message(self, ch, method, properties, body):
-        # Process the message from RabbitMQ
-        # print(body)
-        message = body.decode('utf-8')
-        message2 = json.loads(body.decode('utf-8'))
-        print(message2)
-        print(type(message2))
-        # self.send(text_data=message)
-        self.send(text_data=json.dumps(message2))
+        
+        # message in bytes hence decoding message
+        # then passing to json.loads() to convert
+        # to a python dictionary
+        asset_data = json.loads(body.decode('utf-8'))
+        
+        # sending the data
+        self.send(text_data=json.dumps(asset_data))
 
     def receive(self, text_data):
         # Handle WebSocket messages if needed
