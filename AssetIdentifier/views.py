@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .utils import initiate_scanner
+# from .utils import initiate_scanner
+from AssetIdentifier.utilities.scan_script import initiate_scanner
 from rest_framework.response import Response
 from threading import Thread
 
