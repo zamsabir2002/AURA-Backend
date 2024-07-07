@@ -3,4 +3,5 @@ __pycache__
 
 .venv
 
+./scan_results.txt
 scan_results.txt
