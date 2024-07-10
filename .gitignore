@@ -5,3 +5,6 @@ __pycache__
 
 ./scan_results.txt
 scan_results.txt
+
+./json_output.json
+json_output.json
