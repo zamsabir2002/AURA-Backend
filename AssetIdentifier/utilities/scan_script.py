@@ -4,7 +4,11 @@ import os
 import pika
 import re
 from AssetIdentifier.utilities.result_to_queue import publish_result_to_queue
+import requests
 
+
+
+RESULTS = 'https://jsonkeeper.com/b/1BUZ'
 
 def severity_check(host="192.168.1.100"):
     last_octet = int(host.split(".")[-1])
@@ -35,13 +39,20 @@ def callback_initial_scan(host, scan_result):
     if scan_result['scan'] == {}:
         print(host, "DOWN NOW")
     else:
-        # print(scan_result)
+
         with open("scan_results.txt", 'a') as file:
             existing_ips = get_up_ip()
             if host in existing_ips:
                 return
             else:
                 file.write(f"{host}\n")
+        
+
+        response = requests.get(RESULTS, verify=False)
+        data = response.json()
+
+        with open('result.json', 'w') as f:
+            json.dump(data, f, indent=4)
 
 
 def clean_output(host, scan_result):
