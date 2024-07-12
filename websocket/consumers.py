@@ -17,22 +17,22 @@ class QueueConsumer(WebsocketConsumer):
         try:
             # Connect to RabbitMQ and start consuming messages
             print("Starting Connection......")
-            # self.connection = pika.BlockingConnection(
-            #     pika.ConnectionParameters('localhost'))
-            # self.channel = self.connection.channel()
-            # self.channel.queue_declare(queue='json_queue')
-            # self.channel.basic_consume(
-            #     queue='json_queue',
-            #     on_message_callback=self.receive_message,
-            #     auto_ack=True
-            # )
+            self.connection = pika.BlockingConnection(
+                pika.ConnectionParameters('localhost'))
+            self.channel = self.connection.channel()
+            self.channel.queue_declare(queue='json_queue')
+            self.channel.basic_consume(
+                queue='json_queue',
+                on_message_callback=self.receive_message,
+                auto_ack=True
+            )
 
-            # scan_thread = Thread(target=self.channel.start_consuming)
+            scan_thread = Thread(target=self.channel.start_consuming)
 
-            # print(scan_thread)
-            # scan_thread.start()
+            print(scan_thread)
+            scan_thread.start()
 
-            # self.channel.start_consuming()
+            self.channel.start_consuming()
             self.send(text_data=json.dumps({
                 'type': 'connection_established',
                 'message': 'You are connected!'

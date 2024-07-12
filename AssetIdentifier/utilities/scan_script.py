@@ -3,10 +3,7 @@ import json
 import os
 import pika
 import re
-
-# HIGH_SEVERITY_LIST = ['192.168.1.107']
-# MEDIUM_SEVERITY_LIST = ['192.168.1.100', '192.168.1.102']
-# LOW_SEVERITY_LIST = []
+from AssetIdentifier.utilities.result_to_queue import publish_result_to_queue
 
 
 def severity_check(host="192.168.1.100"):
@@ -17,14 +14,6 @@ def severity_check(host="192.168.1.100"):
         return 'Medium Severity Zone'
     else:
         return 'Low Severity Zone'
-
-# def severity_check(host):
-#     if host in HIGH_SEVERITY_LIST:
-#         return 'High Severity Zone'
-#     elif host in MEDIUM_SEVERITY_LIST:
-#         return 'Medium Severity Zone'
-#     else:
-#         return 'Low Severity Zone'
 
 
 def publish_message(host, message):
@@ -46,7 +35,7 @@ def callback_initial_scan(host, scan_result):
     if scan_result['scan'] == {}:
         print(host, "DOWN NOW")
     else:
-        print(scan_result)
+        # print(scan_result)
         with open("scan_results.txt", 'a') as file:
             existing_ips = get_up_ip()
             if host in existing_ips:
@@ -107,25 +96,6 @@ def second_scan_callback(host, scan_result):
     # publish_message(host, scan_result)
     clean_output(host, scan_result)
     save_results_to_json(scan_result, "json_output.json")
-    # if os.path.exists('./json_output.json'):
-    #     try:
-    #         with open("json_output.json", "r+") as file:
-    #             data = json.load(file)
-    #             data[host] = scan_result
-    #             file.seek(0)
-    #             json.dump(data, file, indent=4)
-    #     except:
-    #         with open("json_output.json", "w") as file:
-    #             data = {host: scan_result}
-    #             file.seek(0)
-    #             json.dump(data, file, indent=4)
-    #             file.close()
-    # else:
-    #     with open("json_output.json", "w") as file:
-    #         data = {host: scan_result}
-    #         file.seek(0)
-    #         json.dump(data, file, indent=4)
-    #         file.close()
 
 
 def run_nmap_scan(flags, callback, hosts=None):
@@ -173,37 +143,44 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     # To discover majority of the devices
     run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
 
-    # Extract IP addresses of hosts that are up
-    up_ips = get_up_ip()
-    print("Up Ips", up_ips)
-
-    print("\n\n=============================================================================================================")
+    # # Extract IP addresses of hosts that are up
+    # up_ips = get_up_ip()
+    # print("Up Ips", up_ips)
 
     # Run second scan with specified flags on currently up IP addresses
-    for ip in up_ips:
-        # run_nmap_scan(
-        #     hosts=ip, flags='-T4 -Pn --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 20 -sV --script=dns-brute,dns-check-zone,dns-zone-transfer,ftp-anon,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,http-aspnet-debug,http-cookie-flags,msrpc-enum,ms-sql-info,mysql-info,nbstat,nfs-showmount,oracle-tns-version,rdp-enum-encryption,rpcinfo,smb2-security-mode,smb-enum-shares,smb-security-mode,smtp-open-relay,snmp-info,ssl-enum-ciphers,tftp-version,vmware-version,vulners',
-        #     callback=second_scan_callback
-        # )
-        #     run_nmap_scan(flags='-iL ./scan_results.txt -T4 --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 50 -sV -sC',
-        #                   callback=second_scan_callback)
+    # for ip in up_ips:
+    #     # run_nmap_scan(
+    #     #     hosts=ip, flags='-T4 -Pn --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 20 -sV --script=dns-brute,dns-check-zone,dns-zone-transfer,ftp-anon,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,http-aspnet-debug,http-cookie-flags,msrpc-enum,ms-sql-info,mysql-info,nbstat,nfs-showmount,oracle-tns-version,rdp-enum-encryption,rpcinfo,smb2-security-mode,smb-enum-shares,smb-security-mode,smtp-open-relay,snmp-info,ssl-enum-ciphers,tftp-version,vmware-version,vulners',
+    #     #     callback=second_scan_callback
+    #     # )
+    #     #     run_nmap_scan(flags='-iL ./scan_results.txt -T4 --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 50 -sV -sC',
+    #     #                   callback=second_scan_callback)
 
-        # run_nmap_scan(ip, '-T4 --max-retries 1 --max-scan-delay 20 --open --system-dns  --top-ports 50 -sV -Pn --script=ssl-enum-ciphers,smb2-security-mode,smb-security-mode', callback=second_scan_callback)
+    #     # run_nmap_scan(ip, '-T4 --max-retries 1 --max-scan-delay 20 --open --system-dns  --top-ports 50 -sV -Pn --script=ssl-enum-ciphers,smb2-security-mode,smb-security-mode', callback=second_scan_callback)
 
-        # run_nmap_scan(ip, '-T4 --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 50 -sV --script=*', callback=second_scan_callback)
+    #     # run_nmap_scan(ip, '-T4 --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 50 -sV --script=*', callback=second_scan_callback)
 
-        run_nmap_scan(
-            hosts=ip,
-            flags='-sC -sV -T4 --max-scan-delay 20 --max-retries 1 -PE -PP --open --top-ports 15 --version-intensity 5',
-            callback=second_scan_callback
-        )
+    #     # run_nmap_scan(
+    #     #     hosts=ip,
+    #     #     flags='-sC -sV -T4 --max-scan-delay 20 --max-retries 1 -PE -PP --open --top-ports 15 --version-intensity 5',
+    #     #     callback=second_scan_callback
+    #     # )
 
-        # run_nmap_scan(
-        #     hosts=ip,
-        #     flags='-sS -sV --version-intensity 5 -O --osscan-guess --fuzzy --max-os-tries 8 --max-retries 4 -PE -Pn -PP --top-port 15 --min-hostgroup 64',
-        #     callback=second_scan_callback
-        # )
-    print("DONE")
+    #     run_nmap_scan(
+    #         hosts=ip,
+    #         flags='-sC -sV -T4 --max-scan-delay 20 --max-retries 1 -PE -PP --open --top-ports 15 --version-intensity 5',
+    #         callback=second_scan_callback
+    #     )
+
+    #     # run_nmap_scan(
+    #     #     hosts=ip,
+    #     #     flags='-sS -sV --version-intensity 5 -O --osscan-guess --fuzzy --max-os-tries 8 --max-retries 4 -PE -Pn -PP --top-port 15 --min-hostgroup 64',
+    #     #     callback=second_scan_callback
+    #     # )
+
+    publish_result_to_queue()
+
+    print("Scan Ended")
     # with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
     #     channel = connection.channel()
 
