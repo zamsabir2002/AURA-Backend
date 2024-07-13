@@ -1,6 +1,7 @@
 from django.urls import path
-from .consumers import QueueConsumer
+from .consumers import ScanResultConsumer
 
 websocket_urlpatterns = [
-    path('ws/queue/', QueueConsumer.as_asgi()),
+    path('ws/scan_results/', ScanResultConsumer.as_asgi()),
+    # path('ws/alerts/', QueueConsumer.as_asgi()),
 ]

@@ -7,8 +7,8 @@ from AssetIdentifier.utilities.result_to_queue import publish_result_to_queue
 import requests
 
 
-
 RESULTS = 'https://jsonkeeper.com/b/1BUZ'
+
 
 def severity_check(host="192.168.1.100"):
     last_octet = int(host.split(".")[-1])
@@ -46,13 +46,6 @@ def callback_initial_scan(host, scan_result):
                 return
             else:
                 file.write(f"{host}\n")
-        
-
-        response = requests.get(RESULTS, verify=False)
-        data = response.json()
-
-        with open('result.json', 'w') as f:
-            json.dump(data, f, indent=4)
 
 
 def clean_output(host, scan_result):
@@ -110,6 +103,12 @@ def second_scan_callback(host, scan_result):
 
 
 def run_nmap_scan(flags, callback, hosts=None):
+    response = requests.get(RESULTS, verify=False)
+    data = response.json()
+
+    with open('result.json', 'w') as f:
+        json.dump(data, f, indent=4)
+
     nma = nmap.PortScannerAsync()
     try:
         if hosts:
@@ -152,7 +151,9 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     f.truncate(0)
     # Initial Scan with -sP
     # To discover majority of the devices
-    run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
+    
+    ##########################3 RUNNN
+    # run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
 
     # # Extract IP addresses of hosts that are up
     # up_ips = get_up_ip()

@@ -7,7 +7,7 @@ import pika
 from threading import Thread
 
 
-class QueueConsumer(WebsocketConsumer):
+class ScanResultConsumer(WebsocketConsumer):
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
     #     self.thread_id = None
@@ -22,7 +22,8 @@ class QueueConsumer(WebsocketConsumer):
             self.channel = self.connection.channel()
             self.channel.queue_declare(queue='json_queue')
             self.channel.basic_consume(
-                queue='json_queue',
+                # queue='json_queue',
+                queue='result_queue',
                 on_message_callback=self.receive_message,
                 auto_ack=True
             )
@@ -32,13 +33,13 @@ class QueueConsumer(WebsocketConsumer):
             print(scan_thread)
             scan_thread.start()
 
-            self.channel.start_consuming()
-            self.send(text_data=json.dumps({
-                'type': 'connection_established',
-                'message': 'You are connected!'
-            }))
+            # self.channel.start_consuming()
+            # self.send(text_data=json.dumps({
+            #     'type': 'connection_established',
+            #     'message': 'You are connected!'
+            # }))
         except Exception as E:
-            print("\n\n-----\n\n---------\n\n-----", E)
+            print("\n\n-------------------", E)
             self.send(text_data=json.dumps({
                 'type': 'connection aborted',
                 'message': 'Internal Server Error',

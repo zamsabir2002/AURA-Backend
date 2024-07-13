@@ -259,280 +259,280 @@
         {
             "hostnames": "DESKTOP-OBLIVION711",
             "addresses": {
-              "ipv4": "192.168.10.10",
-              "mac": "00:1A:2B:3C:4D:5E"
+                "ipv4": "192.168.10.10",
+                "mac": "00:1A:2B:3C:4D:5E"
             },
             "os": {
-              "osmatch": [
-                {
-                  "name": "Windows 10",
-                  "accuracy": 100
-                }
-              ]
+                "osmatch": [
+                    {
+                        "name": "Windows 10",
+                        "accuracy": 100
+                    }
+                ]
             },
             "ports": {
-              "3389": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "ms-wbt-server",
-                "product": "Microsoft Terminal Services",
-                "version": "",
-                "extrainfo": "",
-                "conf": "8",
-                "cpe": "cpe:/o:microsoft:windows_10"
-              }
+                "3389": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "ms-wbt-server",
+                    "product": "Microsoft Terminal Services",
+                    "version": "",
+                    "extrainfo": "",
+                    "conf": "8",
+                    "cpe": "cpe:/o:microsoft:windows_10"
+                }
             },
             "severity": "Medium Severity Zone"
-          },
-          {
+        },
+        {
             "hostnames": "HAMZARASHID",
             "addresses": {
-              "ipv4": "192.168.10.20",
-              "mac": "00:1B:2C:3D:4E:5F"
+                "ipv4": "192.168.10.20",
+                "mac": "00:1B:2C:3D:4E:5F"
             },
             "os": {
-              "osmatch": [
-                {
-                  "name": "Ubuntu 20.04",
-                  "accuracy": 100
-                }
-              ]
+                "osmatch": [
+                    {
+                        "name": "Ubuntu 20.04",
+                        "accuracy": 100
+                    }
+                ]
             },
             "ports": {
-              "22": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "ssh",
-                "product": "OpenSSH",
-                "version": "8.2p1",
-                "extrainfo": "(Ubuntu)",
-                "conf": "10",
-                "cpe": "cpe:/a:openssh:openssh:8.2p1"
-              },
-              "80": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "http",
-                "product": "Apache httpd",
-                "version": "2.4.41",
-                "extrainfo": "(Ubuntu)",
-                "conf": "10",
-                "cpe": "cpe:/a:apache:http_server:2.4.41"
-              }
+                "22": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "ssh",
+                    "product": "OpenSSH",
+                    "version": "8.2p1",
+                    "extrainfo": "(Ubuntu)",
+                    "conf": "10",
+                    "cpe": "cpe:/a:openssh:openssh:8.2p1"
+                },
+                "80": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "http",
+                    "product": "Apache httpd",
+                    "version": "2.4.41",
+                    "extrainfo": "(Ubuntu)",
+                    "conf": "10",
+                    "cpe": "cpe:/a:apache:http_server:2.4.41"
+                }
             },
             "severity": "High Severity Zone"
-          },
-          {
+        },
+        {
             "hostnames": "ABDURREHMAN-PC",
             "addresses": {
-              "ipv4": "192.168.20.10",
-              "mac": "00:1A:2B:3C:4D:5E"
+                "ipv4": "192.168.20.10",
+                "mac": "00:1A:2B:3C:4D:5E"
             },
             "os": {
-              "osmatch": [
-                {
-                  "name": "Ubuntu 20.04",
-                  "accuracy": 100
-                }
-              ]
+                "osmatch": [
+                    {
+                        "name": "Ubuntu 20.04",
+                        "accuracy": 100
+                    }
+                ]
             },
             "ports": {
-              "22": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "ssh",
-                "product": "OpenSSH",
-                "version": "8.2p1",
-                "extrainfo": "(Ubuntu)",
-                "conf": "10",
-                "cpe": "cpe:/a:openssh:openssh:8.2p1"
-              },
-              "80": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "http",
-                "product": "Apache httpd",
-                "version": "2.4.41",
-                "extrainfo": "(Ubuntu)",
-                "conf": "10",
-                "cpe": "cpe:/a:apache:http_server:2.4.41"
-              }
+                "22": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "ssh",
+                    "product": "OpenSSH",
+                    "version": "8.2p1",
+                    "extrainfo": "(Ubuntu)",
+                    "conf": "10",
+                    "cpe": "cpe:/a:openssh:openssh:8.2p1"
+                },
+                "80": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "http",
+                    "product": "Apache httpd",
+                    "version": "2.4.41",
+                    "extrainfo": "(Ubuntu)",
+                    "conf": "10",
+                    "cpe": "cpe:/a:apache:http_server:2.4.41"
+                }
             },
             "script": {
-              "ssl-date": "TLS randomness does not represent time",
-              "ssl-cert": "Subject: commonName=Hamza-PC/organizationName=Example Co/stateOrProvinceName=Punjab/countryName=PK\nNot valid before: 2022-01-01T00:00:00\nNot valid after:  2023-01-01T00:00:00"
+                "ssl-date": "TLS randomness does not represent time",
+                "ssl-cert": "Subject: commonName=Hamza-PC/organizationName=Example Co/stateOrProvinceName=Punjab/countryName=PK\nNot valid before: 2022-01-01T00:00:00\nNot valid after:  2023-01-01T00:00:00"
             },
             "scripts": [
-              {
-                "id": "smb2-time",
-                "output": "Protocol negotiation failed (SMB2)"
-              },
-              {
-                "id": "http-title",
-                "output": "Apache2 Ubuntu Default Page: It works"
-              }
+                {
+                    "id": "smb2-time",
+                    "output": "Protocol negotiation failed (SMB2)"
+                },
+                {
+                    "id": "http-title",
+                    "output": "Apache2 Ubuntu Default Page: It works"
+                }
             ],
             "severity": "High Severity Zone"
-          },
-          {
+        },
+        {
             "hostnames": "FAIZA-LAPTOP",
             "addresses": {
-              "ipv4": "192.168.20.20",
-              "mac": "00:1B:2C:3D:4E:5F"
+                "ipv4": "192.168.20.20",
+                "mac": "00:1B:2C:3D:4E:5F"
             },
             "os": {
-              "osmatch": [
-                {
-                  "name": "Debian GNU/Linux 10 (buster)",
-                  "accuracy": 100
-                }
-              ]
+                "osmatch": [
+                    {
+                        "name": "Debian GNU/Linux 10 (buster)",
+                        "accuracy": 100
+                    }
+                ]
             },
             "ports": {
-              "25": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "smtp",
-                "product": "Postfix",
-                "version": "3.4.14",
-                "extrainfo": "",
-                "conf": "10",
-                "cpe": "cpe:/a:postfix:postfix:3.4.14"
-              },
-              "465": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "smtps",
-                "product": "Postfix smtps",
-                "version": "3.4.14",
-                "extrainfo": "",
-                "conf": "10",
-                "cpe": "cpe:/a:postfix:postfix:3.4.14"
-              }
+                "25": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "smtp",
+                    "product": "Postfix",
+                    "version": "3.4.14",
+                    "extrainfo": "",
+                    "conf": "10",
+                    "cpe": "cpe:/a:postfix:postfix:3.4.14"
+                },
+                "465": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "smtps",
+                    "product": "Postfix smtps",
+                    "version": "3.4.14",
+                    "extrainfo": "",
+                    "conf": "10",
+                    "cpe": "cpe:/a:postfix:postfix:3.4.14"
+                }
             },
             "script": {
-              "ssl-date": "TLS randomness does not represent time",
-              "ssl-cert": "Subject: commonName=Faiza-Laptop/organizationName=Example Co/stateOrProvinceName=Punjab/countryName=PK\nNot valid before: 2022-01-01T00:00:00\nNot valid after:  2023-01-01T00:00:00"
+                "ssl-date": "TLS randomness does not represent time",
+                "ssl-cert": "Subject: commonName=Faiza-Laptop/organizationName=Example Co/stateOrProvinceName=Punjab/countryName=PK\nNot valid before: 2022-01-01T00:00:00\nNot valid after:  2023-01-01T00:00:00"
             },
             "scripts": [
-              {
-                "id": "ftp-anon",
-                "output": "Anonymous FTP login allowed"
-              },
-              {
-                "id": "smb2-security-mode",
-                "output": "Message signing enabled but not required"
-              },
-              {
-                "id": "http-robots.txt",
-                "output": "User-agent: *\nDisallow: /"
-              }
+                {
+                    "id": "ftp-anon",
+                    "output": "Anonymous FTP login allowed"
+                },
+                {
+                    "id": "smb2-security-mode",
+                    "output": "Message signing enabled but not required"
+                },
+                {
+                    "id": "http-robots.txt",
+                    "output": "User-agent: *\nDisallow: /"
+                }
             ],
             "severity": "Medium Severity Zone"
-          },
-          {
+        },
+        {
             "hostnames": "KHALID-DESKTOP",
             "addresses": {
-              "ipv4": "192.168.20.30",
-              "mac": "00:1C:2D:3E:4F:60"
+                "ipv4": "192.168.20.30",
+                "mac": "00:1C:2D:3E:4F:60"
             },
             "os": {
-              "osmatch": [
-                {
-                  "name": "Windows 10",
-                  "accuracy": 100
-                }
-              ]
+                "osmatch": [
+                    {
+                        "name": "Windows 10",
+                        "accuracy": 100
+                    }
+                ]
             },
             "ports": {
-              "3389": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "ms-wbt-server",
-                "product": "Microsoft Terminal Services",
-                "version": "",
-                "extrainfo": "",
-                "conf": "8",
-                "cpe": "cpe:/o:microsoft:windows_10"
-              },
-              "139": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "netbios-ssn",
-                "product": "Microsoft Windows netbios-ssn",
-                "version": "",
-                "extrainfo": "",
-                "conf": "8",
-                "cpe": "cpe:/o:microsoft:windows_10"
-              }
+                "3389": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "ms-wbt-server",
+                    "product": "Microsoft Terminal Services",
+                    "version": "",
+                    "extrainfo": "",
+                    "conf": "8",
+                    "cpe": "cpe:/o:microsoft:windows_10"
+                },
+                "139": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "netbios-ssn",
+                    "product": "Microsoft Windows netbios-ssn",
+                    "version": "",
+                    "extrainfo": "",
+                    "conf": "8",
+                    "cpe": "cpe:/o:microsoft:windows_10"
+                }
             },
             "script": {
-              "ssl-date": "TLS randomness does not represent time",
-              "ssl-cert": "Subject: commonName=Khalid-Desktop/organizationName=Example Co/stateOrProvinceName=Sindh/countryName=PK\nNot valid before: 2022-01-01T00:00:00\nNot valid after:  2023-01-01T00:00:00"
+                "ssl-date": "TLS randomness does not represent time",
+                "ssl-cert": "Subject: commonName=Khalid-Desktop/organizationName=Example Co/stateOrProvinceName=Sindh/countryName=PK\nNot valid before: 2022-01-01T00:00:00\nNot valid after:  2023-01-01T00:00:00"
             },
             "scripts": [
-              {
-                "id": "smb2-time",
-                "output": "Date: 2024-07-10T15:19:01"
-              },
-              {
-                "id": "smb2-security-mode",
-                "output": "Message signing enabled but not required"
-              },
-              {
-                "id": "msrpc-enum",
-                "output": "Enumerated 5 endpoints"
-              }
+                {
+                    "id": "smb2-time",
+                    "output": "Date: 2024-07-10T15:19:01"
+                },
+                {
+                    "id": "smb2-security-mode",
+                    "output": "Message signing enabled but not required"
+                },
+                {
+                    "id": "msrpc-enum",
+                    "output": "Enumerated 5 endpoints"
+                }
             ],
             "severity": "Medium Severity Zone"
-          },
-          {
+        },
+        {
             "hostnames": "TALHA-LAPTOP",
             "addresses": {
-              "ipv4": "192.168.20.40",
-              "mac": "00:1D:2E:3F:4G:71"
+                "ipv4": "192.168.20.40",
+                "mac": "00:1D:2E:3F:4G:71"
             },
             "os": {
-              "osmatch": [
-                {
-                  "name": "Windows 11",
-                  "accuracy": 100
-                }
-              ]
+                "osmatch": [
+                    {
+                        "name": "Windows 11",
+                        "accuracy": 100
+                    }
+                ]
             },
             "ports": {
-              "21": {
-                "state": "open",
-                "reason": "syn-ack",
-                "name": "ftp",
-                "product": "",
-                "version": "",
-                "extrainfo": "",
-                "conf": "8",
-                "cpe": "cpe:/o:microsoft:windows_11",
-                "scripts": [
-                  {
-                    "id": "ftp-anon",
-                    "output": "Anonymous FTP login allowed, writable directory found"
-                  },
-                  {
-                    "id": "ftp-syst",
-                    "output": "UNIX Type: L8"
-                  }
-                ]
-              }
+                "21": {
+                    "state": "open",
+                    "reason": "syn-ack",
+                    "name": "ftp",
+                    "product": "",
+                    "version": "",
+                    "extrainfo": "",
+                    "conf": "8",
+                    "cpe": "cpe:/o:microsoft:windows_11",
+                    "scripts": [
+                        {
+                            "id": "ftp-anon",
+                            "output": "Anonymous FTP login allowed, writable directory found"
+                        },
+                        {
+                            "id": "ftp-syst",
+                            "output": "UNIX Type: L8"
+                        }
+                    ]
+                }
             },
             "script": {
-              "ssl-date": "TLS randomness does not represent time",
-              "ssl-cert": "Subject: commonName=Talha-Laptop/organizationName=Example Co/stateOrProvinceName=KPK/countryName=PK\nNot valid before: 2022-01-01T00:00:00\nNot valid after:  2023-01-01T00:00:00"
+                "ssl-date": "TLS randomness does not represent time",
+                "ssl-cert": "Subject: commonName=Talha-Laptop/organizationName=Example Co/stateOrProvinceName=KPK/countryName=PK\nNot valid before: 2022-01-01T00:00:00\nNot valid after:  2023-01-01T00:00:00"
             },
             "scripts": [
-              {
-                "id": "smb2-time",
-                "output": "Date: 2024-07-10T15:19:01"
-              }
+                {
+                    "id": "smb2-time",
+                    "output": "Date: 2024-07-10T15:19:01"
+                }
             ],
             "severity": "Low Severity Zone"
-          }
+        }
     ]
 }

@@ -10,4 +10,4 @@ def publish_result_to_queue():
 
     for each in data['scan']:
         print("Host --> ", each.get('addresses').get('ipv4'))
-        publish_message(message=data, queue='result_queue')
+        publish_message(message=each, queue='result_queue')
