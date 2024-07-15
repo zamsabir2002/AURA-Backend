@@ -1,6 +1,6 @@
 import os
 import json
-from AssetIdentifier.utilities.publish_message import publish_message
+from AssetMapper.utilities.publish_message import publish_message
 
 
 def publish_result_to_queue():

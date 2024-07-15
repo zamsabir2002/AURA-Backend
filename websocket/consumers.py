@@ -73,3 +73,49 @@ class ScanResultConsumer(WebsocketConsumer):
     def receive(self, text_data):
         # Handle WebSocket messages if needed
         pass
+
+class AlertConsumer(WebsocketConsumer):
+    def connect(self):
+        self.accept()
+        try:
+            # Connect to RabbitMQ and start consuming messages
+            print("Starting Alert Connection......")
+            self.connection = pika.BlockingConnection(
+                pika.ConnectionParameters('localhost'))
+            self.channel = self.connection.channel()
+            self.channel.queue_declare(queue='alert_queue')
+            self.channel.basic_consume(
+                queue='alert_queue',
+                on_message_callback=self.receive_alert,
+                auto_ack=True
+            )
+
+            alert_thread = Thread(target=self.channel.start_consuming)
+            print(alert_thread)
+            alert_thread.start()
+
+        except Exception as e:
+            print("\n\n-------------------", e)
+            self.send(text_data=json.dumps({
+                'type': 'connection_aborted',
+                'message': 'Internal Server Error',
+                'status_code': 500
+            }))
+
+    def disconnect(self, close_code):
+        # Close connection to RabbitMQ
+        try:
+            self.connection.close()
+            raise StopConsumer()
+        except:
+            print("CLOSING")
+            raise StopConsumer()
+
+    def receive_alert(self, ch, method, properties, body):
+        # Decode message and send to WebSocket
+        alert_data = json.loads(body.decode('utf-8'))
+        self.send(text_data=json.dumps(alert_data))
+
+    def receive(self, text_data):
+        # Handle WebSocket messages if needed
+        pass

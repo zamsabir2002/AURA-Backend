@@ -13,14 +13,24 @@ import json
 #     print('\n\n')
 
 
-import requests
+# import requests
 
-url = 'https://jsonkeeper.com/b/1BUZ'
+# url = 'https://jsonkeeper.com/b/1BUZ'
 
-response = requests.get(url, verify=False)
-data = response.json()
+# response = requests.get(url, verify=False)
+# data = response.json()
 
-print(data)
+# print(data)
 
-with open('result2.json', 'w') as f:
-    json.dump(data, f, indent=4)
+# with open('result2.json', 'w') as f:
+#     json.dump(data, f, indent=4)
+
+import os
+import json
+
+if os.path.exists('./result.json'):
+    with open("result.json", "r+") as file:
+        data = json.load(file)
+print(data['scan'])
+for each_asset in data['scan']:
+    pass

@@ -3,9 +3,11 @@ import json
 import os
 import pika
 import re
-from AssetIdentifier.utilities.result_to_queue import publish_result_to_queue
 import requests
 
+# First Party
+from AssetMapper.utilities.result_to_queue import publish_result_to_queue
+from AssetMapper.utilities.alert_generation import generate_alerts
 
 RESULTS = 'https://jsonkeeper.com/b/1BUZ'
 
@@ -151,9 +153,9 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     f.truncate(0)
     # Initial Scan with -sP
     # To discover majority of the devices
-    
-    ##########################3 RUNNN
-    # run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
+
+    # 3 RUNNN
+    run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
 
     # # Extract IP addresses of hosts that are up
     # up_ips = get_up_ip()
@@ -191,7 +193,7 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     #     # )
 
     publish_result_to_queue()
-
+    generate_alerts()
     print("Scan Ended")
     # with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
     #     channel = connection.channel()
