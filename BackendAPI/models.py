@@ -4,7 +4,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 # Create your models here.
 
 class Role(models.Model):
-    username = models.CharField(max_length=50)
+    #username = models.CharField(max_length=50)
     roles = models.CharField(max_length=50)
 
 #User Manager Model
@@ -51,8 +51,8 @@ class User(AbstractBaseUser):
 
     ROLE_CHOICES = (
         (ADMIN, 'Admin'),
-        (Risk_Analyser, 'Risk_Analyser'),
-        (Risk_Monitor, ' Risk_Monitor')
+        (Risk_Analyser, 'Risk Analyser'),
+        (Risk_Monitor, 'Risk Monitor')
     )
     
     class Meta:
