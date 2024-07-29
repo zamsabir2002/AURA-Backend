@@ -6,6 +6,8 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 class Role(models.Model):
     #username = models.CharField(max_length=50)
     roles = models.CharField(max_length=50)
+    def __str__(self):
+        return self.roles
 
 #User Manager Model
 class UserManager(BaseUserManager):
@@ -80,10 +82,8 @@ class User(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return self.is_admin
-
+        return self.is_superuser
+    
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
@@ -94,3 +94,6 @@ class User(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.role
+    @property
+    def is_superuser(self):
+        return self.is_admin
