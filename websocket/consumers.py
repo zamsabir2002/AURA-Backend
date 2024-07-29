@@ -40,11 +40,11 @@ class ScanResultConsumer(WebsocketConsumer):
             # }))
         except Exception as E:
             print("\n\n-------------------", E)
-            self.send(text_data=json.dumps({
-                'type': 'connection aborted',
-                'message': 'Internal Server Error',
-                'status_code': 500
-            }))
+            # self.send(text_data=json.dumps({
+            #     'type': 'connection aborted',
+            #     'message': 'Internal Server Error',
+            #     'status_code': 500
+            # }))
             # self.close()
 
     def disconnect(self, close_code):
@@ -96,11 +96,11 @@ class AlertConsumer(WebsocketConsumer):
 
         except Exception as e:
             print("\n\n-------------------", e)
-            self.send(text_data=json.dumps({
-                'type': 'connection_aborted',
-                'message': 'Internal Server Error',
-                'status_code': 500
-            }))
+            # self.send(text_data=json.dumps({
+            #     'type': 'connection_aborted',
+            #     'message': 'Internal Server Error',
+            #     'status_code': 500
+            # }))
 
     def disconnect(self, close_code):
         # Close connection to RabbitMQ
