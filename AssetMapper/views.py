@@ -15,7 +15,7 @@ from AssetMapper.models import ScanResult
 
 class AssetMapperView(APIView):
     permission_classes = (AllowAny,)
-
+    
     def post(self, request):
 
         ip_range = request.data.get('ip_range')

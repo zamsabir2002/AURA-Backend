@@ -104,6 +104,9 @@ def second_scan_callback(host, scan_result):
     save_results_to_json(scan_result, "json_output.json")
 
 
+def os_result(host, scan_result):
+    pass
+
 def run_nmap_scan(flags, callback, hosts=None):
     response = requests.get(RESULTS, verify=False)
     data = response.json()
@@ -155,17 +158,30 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     # To discover majority of the devices
 
     # RUNNN
-    # run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
+    run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
 
     # # Extract IP addresses of hosts that are up
-    # up_ips = get_up_ip()
-    # print("Up Ips", up_ips)
+    up_ips = get_up_ip()
+    print("Up Ips", up_ips)
 
     # run_nmap_scan(flags='-iL ./scan_results.txt -T4 --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 50 -sV -sC', callback=second_scan_callback)
 
     # Run second scan with specified flags on currently up IP addresses
-    # for ip in up_ips:
-    #     run_nmap_scan(
+    for ip in up_ips:
+        run_nmap_scan(
+            hosts=ip,
+            flags='-sS -sV -T3 -n --max-scan-delay 20 --max-retries 1 --top-ports 20 -O --osscan-guess --fuzzy --max-os-tries 8 --script=dns-brute,dns-check-zone,dns-zone-transfer,ftp-anon,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,http-aspnet-debug,http-cookie-flags,msrpc-enum,ms-sql-info,mysql-info,nbstat,nfs-showmount,oracle-tns-version,rdp-enum-encryption,rpcinfo,smb2-security-mode,smb-enum-shares,smb-security-mode,smtp-open-relay,snmp-info,ssl-enum-ciphers,tftp-version,vmware-version,vulners',
+            callback=second_scan_callback
+        )
+        # run_nmap_scan(
+        #     hosts=ip,
+        #     flags='',
+        #     callback=''
+        # )
+        # flags='-T3 -n -sS -sC -sV --max-retries 1--max-scan-delay 20 --top-ports 20 --script=vuln',
+        # -O --osscan-guess --fuzzy --max-os-tries 8
+
+    # run_nmap_scan(
     #         hosts=ip,
     #         flags='-sS -sV --version-intensity 5 -O --osscan-guess --fuzzy --max-os-tries 8 --max-retries 4 -PE -Pn -PP --top-port 15 --min-hostgroup 64',
     #         callback=second_scan_callback
@@ -198,8 +214,8 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     #         callback=second_scan_callback
     #     )
 
-    publish_result_to_queue()
-    generate_alerts()
+    # publish_result_to_queue()
+    # generate_alerts()
     print("Scan Ended")
     # with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
     #     channel = connection.channel()
