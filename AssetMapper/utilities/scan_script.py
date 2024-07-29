@@ -154,21 +154,22 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     # Initial Scan with -sP
     # To discover majority of the devices
 
-    # 3 RUNNN
-    run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
+    # RUNNN
+    # run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
 
     # # Extract IP addresses of hosts that are up
     # up_ips = get_up_ip()
     # print("Up Ips", up_ips)
 
+    # run_nmap_scan(flags='-iL ./scan_results.txt -T4 --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 50 -sV -sC', callback=second_scan_callback)
+
     # Run second scan with specified flags on currently up IP addresses
     # for ip in up_ips:
-    #     # run_nmap_scan(
-    #     #     hosts=ip, flags='-T4 -Pn --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 20 -sV --script=dns-brute,dns-check-zone,dns-zone-transfer,ftp-anon,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,http-aspnet-debug,http-cookie-flags,msrpc-enum,ms-sql-info,mysql-info,nbstat,nfs-showmount,oracle-tns-version,rdp-enum-encryption,rpcinfo,smb2-security-mode,smb-enum-shares,smb-security-mode,smtp-open-relay,snmp-info,ssl-enum-ciphers,tftp-version,vmware-version,vulners',
-    #     #     callback=second_scan_callback
-    #     # )
-    #     #     run_nmap_scan(flags='-iL ./scan_results.txt -T4 --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 50 -sV -sC',
-    #     #                   callback=second_scan_callback)
+    #     run_nmap_scan(
+    #         hosts=ip,
+    #         flags='-sS -sV --version-intensity 5 -O --osscan-guess --fuzzy --max-os-tries 8 --max-retries 4 -PE -Pn -PP --top-port 15 --min-hostgroup 64',
+    #         callback=second_scan_callback
+    #     )
 
     #     # run_nmap_scan(ip, '-T4 --max-retries 1 --max-scan-delay 20 --open --system-dns  --top-ports 50 -sV -Pn --script=ssl-enum-ciphers,smb2-security-mode,smb-security-mode', callback=second_scan_callback)
 
@@ -191,6 +192,11 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     #     #     flags='-sS -sV --version-intensity 5 -O --osscan-guess --fuzzy --max-os-tries 8 --max-retries 4 -PE -Pn -PP --top-port 15 --min-hostgroup 64',
     #     #     callback=second_scan_callback
     #     # )
+
+    # run_nmap_scan(
+    #         hosts=ip, flags='-T4 -Pn --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 20 -sV --script=dns-brute,dns-check-zone,dns-zone-transfer,ftp-anon,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,http-aspnet-debug,http-cookie-flags,msrpc-enum,ms-sql-info,mysql-info,nbstat,nfs-showmount,oracle-tns-version,rdp-enum-encryption,rpcinfo,smb2-security-mode,smb-enum-shares,smb-security-mode,smtp-open-relay,snmp-info,ssl-enum-ciphers,tftp-version,vmware-version,vulners',
+    #         callback=second_scan_callback
+    #     )
 
     publish_result_to_queue()
     generate_alerts()
