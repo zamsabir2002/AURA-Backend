@@ -69,12 +69,17 @@ class UserLoginView(APIView):
             return Response(response,status= status.HTTP_200_OK)
         else:
             return Response(serializer.errors,status= status.HTTP_400_BAD_REQUEST)
+def send_password_change_notification(user):
+    subject = 'Password Changed Successfully'
+    message = f'Hello {user.name},\n\nYour password has been changed successfully\n\nBest Regards,\nTeam AURA'
+    send_mail(subject, message, 'aura.riskdashboard@gmail.com', [user.email])
 
 class UserChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self,request,format=None):
         serializer = UserChangePasswordSerializer(data=request.data,context={'user':request.user})
         if serializer.is_valid(raise_exception=True):
+            send_password_change_notification(request.user)
             return Response({'Message':'Password Changed Successfully!'},status=status.HTTP_200_OK)
 
 class ResetPasswordEmailView(APIView):
