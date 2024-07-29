@@ -1,2 +1,10 @@
 */__pycache__
 __pycache__
+
+.venv
+
+./scan_results.txt
+scan_results.txt
+
+./json_output.json
+json_output.json

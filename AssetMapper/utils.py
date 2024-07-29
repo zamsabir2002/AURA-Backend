@@ -18,8 +18,8 @@ def severity_check(host):
 
 
 def publish_message(host, message):
-    host_severity = severity_check(host)
-    message['severity'] = host_severity
+    # host_severity = severity_check(host)
+    # message['severity'] = host_severity
     with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
         channel = connection.channel()
 
@@ -27,7 +27,7 @@ def publish_message(host, message):
         channel.basic_publish(exchange='',
                               routing_key='json_queue',
                               body=json.dumps(message).encode('utf-8'))
-                            #   body=json.dumps(message))
+        #   body=json.dumps(message))
         print(" [x] Sent JSON object to queue")
 
 
@@ -115,7 +115,9 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
 
     # Run second scan with specified flags on currently up IP addresses
     for ip in up_ips:
-        run_nmap_scan(ip, '-sS -sV --version-intensity 5 -O --osscan-guess --fuzzy --max-os-tries 8 --max-retries 4 -PE -Pn -PP --top-port 15 --min-hostgroup 64', callback=second_scan_callback)
+        run_nmap_scan(ip, 'nmap -T4 --max-retries 1 --max-scan-delay 20 --open --system-dns --top-ports 50 -sV -sC',
+                      callback=second_scan_callback)
+        # run_nmap_scan(ip, '-sS -sV --version-intensity 5 -O --osscan-guess --fuzzy --max-os-tries 8 --max-retries 4 -PE -Pn -PP --top-port 15 --min-hostgroup 64', callback=second_scan_callback)
     print("DONE")
     # with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
     #     channel = connection.channel()
