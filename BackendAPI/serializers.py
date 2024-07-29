@@ -13,7 +13,7 @@ from django.core.mail import send_mail
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
-        fields = ['id','username','roles']
+        fields = ['id','roles']
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
