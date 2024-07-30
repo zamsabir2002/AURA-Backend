@@ -20,7 +20,7 @@ class ScanResultConsumer(WebsocketConsumer):
             self.connection = pika.BlockingConnection(
                 pika.ConnectionParameters('localhost'))
             self.channel = self.connection.channel()
-            self.channel.queue_declare(queue='json_queue')
+            self.channel.queue_declare(queue='result_queue')
             self.channel.basic_consume(
                 # queue='json_queue',
                 queue='result_queue',
