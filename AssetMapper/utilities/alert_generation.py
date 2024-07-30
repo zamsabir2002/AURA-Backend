@@ -141,7 +141,7 @@ def generate_alerts(host=None):
                         "compliance_breached": "SMB message signing not required can lead to data tampering and man-in-the-middle attacks, breaching integrity requirements."
                     })
 
-            if host["script"].get("id") == "msrpc-enum" and "uuid" in host["script"]["output"]:
+            if each_script.get("id") == "msrpc-enum" and "uuid" in host["script"]["output"]:
                 alerts.append({
                     "hostname": host["hostnames"],
                     "ip": host["ip"],
