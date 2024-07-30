@@ -102,9 +102,10 @@ def clean_output(host, scan_result):
                     else:
                         clean_result["scripts"].append(each_script)
 
+            clean_result["os"] = []
             if scan_host.get("osmatch"):
                 if scan_host.get("osmatch")[0]:
-                    clean_result["os"] = [scan_host.get("osmatch")[0]]
+                    clean_result["os"].append(scan_host.get("osmatch")[0])
 
         clean_result['severity'] = severity_check(host)
 
