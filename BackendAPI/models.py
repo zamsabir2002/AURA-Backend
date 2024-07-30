@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
 class Role(models.Model):
     #username = models.CharField(max_length=50)
+    id = models.PositiveIntegerField(primary_key=True)
     roles = models.CharField(max_length=50)
     def __str__(self):
         return self.roles
@@ -37,7 +39,9 @@ class UserManager(BaseUserManager):
             password=password,
             name=name,
         )
+        user.role = 1
         extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_admin', True)
         extra_fields.setdefault('role', 1)
 
         if extra_fields.get('role') != 1:
@@ -68,7 +72,7 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=150)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, default=3)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name='users', default=3)
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
@@ -97,3 +101,13 @@ class User(AbstractBaseUser):
     @property
     def is_superuser(self):
         return self.is_admin
+
+User = get_user_model()
+class UserActivityLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity_type = models.CharField(max_length=50) 
+    timestamp = models.DateTimeField(auto_now_add=True)
+    details = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.user.email} - {self.activity_type} at {self.timestamp}'

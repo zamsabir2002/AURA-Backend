@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Role, User
+from . models import Role, User, UserActivityLog
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.mail import send_mail
 # Register your models here.
@@ -8,7 +8,8 @@ admin.site.site_title = "AURA Admin Portal"
 admin.site.index_title = "Welcome to Admin Portal"
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
-    list_display = ["roles", "get_user_names"]
+    list_display = ["id", "roles", "get_user_names"]
+    ordering = ["id"] 
 
     def get_user_names(self, obj):
         users = User.objects.filter(role__in=[role[0] for role in User.ROLE_CHOICES if role[1] == obj.roles])
@@ -60,3 +61,10 @@ class UserAdmin(BaseUserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
+
+@admin.register(UserActivityLog)
+class UserActivityLogAdmin(admin.ModelAdmin):
+    list_display = ['user', 'activity_type', 'timestamp', 'details']
+    list_filter = ['activity_type', 'timestamp']
+    search_fields = ['user__email', 'activity_type']
+    ordering = ['-timestamp']

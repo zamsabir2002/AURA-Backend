@@ -1,5 +1,6 @@
 from rest_framework import serializers 
-from . models import Role, User
+from . models import Role, User, UserActivityLog
+from .utils import check_for_unusual_activity
 from .renderers import UserErrorRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import update_last_login
@@ -45,6 +46,10 @@ class UserLoginSerializer(serializers.Serializer):
         user = authenticate(email=email, password=password)
 
         if user is None:
+            # Log failed login attempt
+            UserActivityLog.objects.create(user=User.objects.filter(email=email).first(), activity_type='login', details='Failed login attempt')
+            # Check for unusual activity
+            check_for_unusual_activity(User.objects.filter(email=email).first())
             raise serializers.ValidationError("Invalid login credentials")
 
         try:

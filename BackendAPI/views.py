@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from . serializers import RoleSerializer, UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, UserChangePasswordSerializer, PasswordResetEmailSerializer, UserPasswordResetSerializer
-from . models import Role, User
-from django.contrib.auth import authenticate
+from . models import Role, User, UserActivityLog
+from .utils import check_for_unusual_activity
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -52,6 +53,7 @@ def send_registration_email(email, name, password):
         message = f'Hello {name},\n\nYour registration is successful.\n\nEmail: {email}\nPassword: {password}'
         send_mail(subject, message, 'aura.riskdashboard@gmail.com', [email])
 
+User = get_user_model()
 class UserLoginView(APIView):
     permission_classes = (AllowAny, )
     def post(self,request,format=None):
@@ -68,6 +70,14 @@ class UserLoginView(APIView):
             }
             return Response(response,status= status.HTTP_200_OK)
         else:
+            email = request.data.get('email')
+            if email:
+                print("email exists")
+                user = User.objects.filter(email=email).first()
+                if user:
+                    print(f"Creating activity log for user: {user.email}")
+                    UserActivityLog.objects.create(user=user, activity_type='login', details='Failed login attempt')
+                    check_for_unusual_activity(user)  # Checking for anomalies
             return Response(serializer.errors,status= status.HTTP_400_BAD_REQUEST)
 def send_password_change_notification(user):
     subject = 'Password Changed Successfully'
