@@ -52,8 +52,8 @@ class ScanResultConsumer(WebsocketConsumer):
         try:
             self.connection.close()
             raise StopConsumer()
-        except:
-            print("CLOSING")
+        except Exception as e:
+            print("CLOSING" , e)
             raise StopConsumer()
         # raise StopConsumer()
         # finally:

@@ -1,15 +1,28 @@
-import nmap
-import json
+# default settings
 import os
-import pika
-import re
+import django
+# Ensure your DJANGO_SETTINGS_MODULE environment variable is set to your settings module
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Aura.settings')
+
+# Initialize Django
+django.setup()
+
+# third-party
 import requests
+import re
+import pika
+import json
+import nmap
 
 # First Party
 from AssetMapper.utilities.result_to_queue import publish_result_to_queue
 from AssetMapper.utilities.alert_generation import generate_alerts
 from AssetMapper.models import ScanResult
 from AssetMapper.utilities.publish_message import publish_message
+
+
+# First Party
+
 
 RESULTS = 'https://jsonkeeper.com/b/1BUZ'
 
@@ -55,31 +68,30 @@ def callback_initial_scan(host, scan_result):
 def clean_output(host, scan_result):
     clean_result = {}
     if scan_result.get("scan", None):
-        clean_result["scan"] = {}
         scan = scan_result["scan"]
         if scan.get(host):
             scan_host = scan.get(host)
             if scan_host.get("hostnames", None):
-                clean_result["scan"]["hostnames"] = scan_host.get(
+                clean_result["hostnames"] = scan_host.get(
                     "hostnames")[0]["name"] if len(scan_host.get("hostnames")) > 0 else None
             if scan_host.get("addresses"):
-                clean_result["scan"]["addresses"] = scan_host.get("addresses")
+                clean_result["addresses"] = scan_host.get("addresses")
             if scan_host.get("vendor"):
-                clean_result["scan"]["vendor"] = scan_host.get("vendor")
+                clean_result["vendor"] = scan_host.get("vendor")
 
             if scan_host.get("tcp"):
-                clean_result["scan"]["ports"] = scan_host.get("tcp")
+                clean_result["ports"] = scan_host.get("tcp")
 
             if scan_host.get("udp"):
-                clean_result["scan"]["ports"] = scan_host.get("udp")
+                clean_result["ports"] = scan_host.get("udp")
 
             if scan_host.get("hostscript"):
-                clean_result["scan"]["scripts"] = []
+                clean_result["scripts"] = []
                 for each_script in scan_host.get("hostscript"):
                     if re.search(r"errors?", each_script["output"], re.IGNORECASE):
                         continue
                     else:
-                        clean_result["scan"]["scripts"].append(each_script)
+                        clean_result["scripts"].append(each_script)
 
             if scan_host.get("osmatch"):
                 if scan_host.get("osmatch")[0]:
@@ -88,51 +100,52 @@ def clean_output(host, scan_result):
                         0].get("name")
                     clean_result["os"]["class"] = scan_host.get("osmatch")[
                         0].get("name")
-    else:
-        print("NoScan")
-        clean_result["scan"] = None
-        return clean_result
+        clean_result['severity'] = severity_check(host)
 
-    clean_result['severity'] = severity_check(host)
-
-    print(clean_result)
+    print("Cleaned Data -------> ", clean_result)
     return clean_result
 
 
-def get_result():
-    hosts_data = ScanResult.objects.all()
-    for each_data in hosts_data:
-        print(each_data.result)
-        # publish_message(message=each_data.result, queue='result_queue')
-    pass
+def get_result(ip):
+    # hosts_data = ScanResult.objects.all()
+    # for each_data in hosts_data:
+    #     print(each_data.result)
+    #     # publish_message(message=each_data.result, queue='result_queue')
+
+    try:
+        host_data = ScanResult.objects.get(ip=ip)
+        publish_message(message=host_data.result, queue='result_queue')
+        return
+    except:
+        return
+
 
 def store_scan(ip, data):
-    try:
-        stored_data = ScanResult.objects.get(ip=ip)
-        stored_data.result = data
-        stored_data.save()
-        return
-    
-    except ScanResult.DoesNotExist:
-        print("Creating Object")
-        new_data = ScanResult(ip=ip, result=data)
-        new_data.save()
-        return
-
-    except Exception as e:
-        print("EXCEPTION-------", e)
+    if data:
+        try:
+            stored_data = ScanResult.objects.get(ip=ip)
+            stored_data.result = data
+            stored_data.save()
+            return
+        except ScanResult.DoesNotExist:
+            print("Creating Object")
+            scan_result = ScanResult(ip=ip, result=data)
+            scan_result.save()
+            return
+        except Exception as e:
+            print("EXCEPTION-------", e)
 
 
 def second_scan_callback(host, scan_result):
     print(json.dumps(scan_result))
-    get_result()
 
+    get_result(host)
     # FOR STORing
     # ip.get('addresses').get('ipv4')
-    # publish_message(host, scan_result)
     cleaned_data = clean_output(host, scan_result)
-    save_results_to_json(scan_result, "json_output.json")
-
+    store_scan(ip=host, data=cleaned_data)
+    publish_message(message=cleaned_data, queue='result_queue')
+    # save_results_to_json(scan_result, "json_output.json")
 
 
 def run_nmap_scan(flags, callback, hosts=None):
@@ -204,16 +217,14 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
 
     # publish_result_to_queue()
     print("Scan Ended")
-    
 
-
-        # run_nmap_scan(
-        #     hosts=ip,
-        #     flags='',
-        #     callback=''
-        # )
-        # flags='-T3 -n -sS -sC -sV --max-retries 1--max-scan-delay 20 --top-ports 20 --script=vuln',
-        # -O --osscan-guess --fuzzy --max-os-tries 8
+    # run_nmap_scan(
+    #     hosts=ip,
+    #     flags='',
+    #     callback=''
+    # )
+    # flags='-T3 -n -sS -sC -sV --max-retries 1--max-scan-delay 20 --top-ports 20 --script=vuln',
+    # -O --osscan-guess --fuzzy --max-os-tries 8
 
     # run_nmap_scan(
     #         hosts=ip,
