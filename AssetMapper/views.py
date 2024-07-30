@@ -28,29 +28,20 @@ class AssetMapperView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+
 class AssetGet(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        try:
-            scan_result = ScanResult.objects.get(ip='10.17.0.35')
-            # Parse the text to JSON
-            result_data = scan_result.result
-            result_data['hostnames'] = "MyHost"
 
-            scan_result.result = result_data
+        results = ScanResult.objects.all()
+        data = {'scan':[]}
+        for each_result in results:
+            print(each_result.result)
+            data['scan'].append(each_result.result)
 
-            scan_result.save()
-            # response_data = {
-            #     'ip': scan_result.ip,
-            #     'result': result_data
-            # }
-            return Response(result_data)
+        return Response(data)
             # return JsonResponse(response_data)
-
-        except:
-            return Response('Data Not Found', status=status.HTTP_404_NOT_FOUND)
-            # return JsonResponse({'error': 'Scan result not found'}, status=404)
 
     def post(self, request):
         dummy_data = {
