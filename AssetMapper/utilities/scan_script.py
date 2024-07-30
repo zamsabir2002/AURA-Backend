@@ -8,6 +8,8 @@ import requests
 # First Party
 from AssetMapper.utilities.result_to_queue import publish_result_to_queue
 from AssetMapper.utilities.alert_generation import generate_alerts
+from AssetMapper.models import ScanResult
+from AssetMapper.utilities.publish_message import publish_message
 
 RESULTS = 'https://jsonkeeper.com/b/1BUZ'
 
@@ -22,19 +24,19 @@ def severity_check(host="192.168.1.100"):
         return 'Low Severity Zone'
 
 
-def publish_message(host, message):
-    # host_severity = severity_check(host)
-    # message['severity'] = host_severity
+# def publish_message(host, message):
+#     # host_severity = severity_check(host)
+#     # message['severity'] = host_severity
 
-    with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
-        channel = connection.channel()
+#     with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
+#         channel = connection.channel()
 
-        channel.queue_declare(queue='json_queue')
-        channel.basic_publish(exchange='',
-                              routing_key='json_queue',
-                              body=json.dumps(message).encode('utf-8'))
-        #   body=json.dumps(message))
-        print(" [x] Sent JSON object to queue")
+#         channel.queue_declare(queue='json_queue')
+#         channel.basic_publish(exchange='',
+#                               routing_key='json_queue',
+#                               body=json.dumps(message).encode('utf-8'))
+#         #   body=json.dumps(message))
+#         print(" [x] Sent JSON object to queue")
 
 
 def callback_initial_scan(host, scan_result):
@@ -97,15 +99,41 @@ def clean_output(host, scan_result):
     return clean_result
 
 
+def get_result():
+    hosts_data = ScanResult.objects.all()
+    for each_data in hosts_data:
+        print(each_data.result)
+        # publish_message(message=each_data.result, queue='result_queue')
+    pass
+
+def store_scan(ip, data):
+    try:
+        stored_data = ScanResult.objects.get(ip=ip)
+        stored_data.result = data
+        stored_data.save()
+        return
+    
+    except ScanResult.DoesNotExist:
+        print("Creating Object")
+        new_data = ScanResult(ip=ip, result=data)
+        new_data.save()
+        return
+
+    except Exception as e:
+        print("EXCEPTION-------", e)
+
+
 def second_scan_callback(host, scan_result):
     print(json.dumps(scan_result))
+    get_result()
+
+    # FOR STORing
+    # ip.get('addresses').get('ipv4')
     # publish_message(host, scan_result)
     cleaned_data = clean_output(host, scan_result)
     save_results_to_json(scan_result, "json_output.json")
 
 
-def os_result(host, scan_result):
-    pass
 
 def run_nmap_scan(flags, callback, hosts=None):
     response = requests.get(RESULTS, verify=False)
@@ -174,7 +202,7 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
             callback=second_scan_callback
         )
 
-
+    # publish_result_to_queue()
     print("Scan Ended")
     
 
