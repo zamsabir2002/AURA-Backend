@@ -100,7 +100,7 @@ def clean_output(host, scan_result):
 def second_scan_callback(host, scan_result):
     print(json.dumps(scan_result))
     # publish_message(host, scan_result)
-    clean_output(host, scan_result)
+    cleaned_data = clean_output(host, scan_result)
     save_results_to_json(scan_result, "json_output.json")
 
 
@@ -157,10 +157,10 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     # Initial Scan with -sP
     # To discover majority of the devices
 
-    # RUNNN
+    # Host Discovery
     run_nmap_scan(hosts=ip_range, flags='-sP', callback=callback_initial_scan)
 
-    # # Extract IP addresses of hosts that are up
+    # Hosts which are discovered
     up_ips = get_up_ip()
     print("Up Ips", up_ips)
 
@@ -173,6 +173,12 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
             flags='-sS -sV -T3 -n --max-scan-delay 20 --max-retries 1 --top-ports 20 -O --osscan-guess --fuzzy --max-os-tries 8 --script=dns-brute,dns-check-zone,dns-zone-transfer,ftp-anon,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,http-aspnet-debug,http-cookie-flags,msrpc-enum,ms-sql-info,mysql-info,nbstat,nfs-showmount,oracle-tns-version,rdp-enum-encryption,rpcinfo,smb2-security-mode,smb-enum-shares,smb-security-mode,smtp-open-relay,snmp-info,ssl-enum-ciphers,tftp-version,vmware-version,vulners',
             callback=second_scan_callback
         )
+
+
+    print("Scan Ended")
+    
+
+
         # run_nmap_scan(
         #     hosts=ip,
         #     flags='',
@@ -216,7 +222,6 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
 
     # publish_result_to_queue()
     # generate_alerts()
-    print("Scan Ended")
     # with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
     #     channel = connection.channel()
 
