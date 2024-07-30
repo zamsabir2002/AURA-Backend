@@ -172,16 +172,20 @@ class UpdateAsset(APIView):
         data = requests.data.get('updated_data')
         ip_address = data.get('addresses').get('ipv4')
         if ip_address:
-            scan_result = ScanResult.objects.get(ip=ip_address)
-            print("FOUND")
-            if not scan_result:
-                print("NOT FOUND")
-                return Response("Asset data doesn't exist for given IP", status=status.HTTP_400_BAD_REQUEST)
-            print(data)
-            print(scan_result)
-            scan_result.result = data
-            print(scan_result)
-            scan_result.save()
+            try:
+                scan_result = ScanResult.objects.get(ip=ip_address)
+                print("FOUND")
+                print(data)
+                print(scan_result)
+                scan_result.result = data
+                print(scan_result)
+                scan_result.save()
+            except ScanResult.DoesNotExist:
+                print("Not Found")
+                return Response("Asset data doesn't exist for given IP", status=status.HTTP_404_NOT_FOUND)
+            except Exception as e:
+                print("--------------",e)
+                return Response("Unexpected Error", status.HTTP_400_BAD_REQUEST)
         else:
             Response("Couldn't fing ipv4 address",
                      status=status.HTTP_400_BAD_REQUEST)
