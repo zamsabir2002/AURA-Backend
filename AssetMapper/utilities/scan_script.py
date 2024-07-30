@@ -1,11 +1,12 @@
 # default settings
 import os
 import django
-# Ensure your DJANGO_SETTINGS_MODULE environment variable is set to your settings module
+# Settings to utilize django models
+# DJANGO_SETTINGS_MODULE environment variable set to settings module
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Aura.settings')
-
 # Initialize Django
 django.setup()
+
 
 # third-party
 import requests
@@ -80,10 +81,18 @@ def clean_output(host, scan_result):
                 clean_result["vendor"] = scan_host.get("vendor")
 
             if scan_host.get("tcp"):
-                clean_result["ports"] = scan_host.get("tcp")
+                clean_result["ports"] = {}
+                for port, data in scan_host.get("tcp").items():
+                    if data.get('state') == 'closed':
+                        continue
+                    clean_result["ports"][port] = data
 
             if scan_host.get("udp"):
-                clean_result["ports"] = scan_host.get("udp")
+                for port, data in scan_host.get("udp").items():
+                    if data.get('state') == 'closed':
+                        continue
+                    clean_result["ports"][port] = data
+
 
             if scan_host.get("hostscript"):
                 clean_result["scripts"] = []
@@ -95,11 +104,8 @@ def clean_output(host, scan_result):
 
             if scan_host.get("osmatch"):
                 if scan_host.get("osmatch")[0]:
-                    clean_result["os"] = {}
-                    clean_result["os"]["name"] = scan_host.get("osmatch")[
-                        0].get("name")
-                    clean_result["os"]["class"] = scan_host.get("osmatch")[
-                        0].get("name")
+                    clean_result["os"] = [scan_host.get("osmatch")[0]]
+
         clean_result['severity'] = severity_check(host)
 
     print("Cleaned Data -------> ", clean_result)
@@ -114,10 +120,10 @@ def get_result(ip):
 
     try:
         host_data = ScanResult.objects.get(ip=ip)
-        publish_message(message=host_data.result, queue='result_queue')
-        return
+        # publish_message(message=host_data.result, queue='result_queue')
+        return host_data.result
     except:
-        return
+        return None
 
 
 def store_scan(ip, data):
@@ -139,13 +145,19 @@ def store_scan(ip, data):
 def second_scan_callback(host, scan_result):
     print(json.dumps(scan_result))
 
-    get_result(host)
-    # FOR STORing
-    # ip.get('addresses').get('ipv4')
-    cleaned_data = clean_output(host, scan_result)
-    store_scan(ip=host, data=cleaned_data)
-    publish_message(message=cleaned_data, queue='result_queue')
-    # save_results_to_json(scan_result, "json_output.json")
+    db_data = get_result(host)
+
+    if not scan_result.get('scan', None):
+        if db_data: 
+            publish_message(message=db_data, queue='result_queue')
+            generate_alerts(host=db_data)
+        else:
+            print(host, "HOST SEEMS DOWN")
+    else:
+        cleaned_data = clean_output(host, scan_result)
+        store_scan(ip=host, data=cleaned_data)
+        publish_message(message=cleaned_data, queue='result_queue')
+        generate_alerts(host=cleaned_data)
 
 
 def run_nmap_scan(flags, callback, hosts=None):
@@ -260,7 +272,6 @@ def initiate_scanner(ip_range='192.168.1.0/24'):
     #     )
 
     # publish_result_to_queue()
-    # generate_alerts()
     # with pika.BlockingConnection(pika.ConnectionParameters('localhost')) as connection:
     #     channel = connection.channel()
 

@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 # from .utils import initiate_scanner
 from AssetMapper.utilities.scan_script import initiate_scanner
+from AssetMapper.utilities.alert_generation import generate_alerts
 from rest_framework.response import Response
 from threading import Thread
 
@@ -183,3 +184,15 @@ class UpdateAsset(APIView):
 
         # queue push
         return Response("Asset Information Updated", status=status.HTTP_200_OK)
+
+
+class GenerateAlerts(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, requests):
+        results = ScanResult.objects.all()
+        # data = {'scan': []}
+
+        for each_result in results:
+            generate_alerts(host=each_result.result)
+
+        return Response('')
